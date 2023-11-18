@@ -1,4 +1,5 @@
 package com.challenge.ClientePersona.controllers;
+import com.challenge.ClientePersona.dto.PersonaClienteDTO;
 import com.challenge.ClientePersona.models.Cliente;
 import com.challenge.ClientePersona.services.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,5 +48,11 @@ public class ClienteController {
     public ResponseEntity<Void> deleteCliente(@PathVariable Long id) {
         clienteService.deleteClienteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<Cliente> createClienteFromDTO(@RequestBody PersonaClienteDTO personaClienteDTO) {
+        Cliente cliente = clienteService.createClienteFromDTO(personaClienteDTO);
+        return new ResponseEntity<>(cliente, HttpStatus.CREATED);
     }
 }

@@ -18,7 +18,7 @@ public class Cliente {
     private String contraseña;
 
     @Column(name = "estado")
-    private String estado;
+    private boolean estado;
 
     @OneToOne
     @JoinColumn(name = "id")
