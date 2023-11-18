@@ -39,3 +39,6 @@ CREATE TABLE IF NOT EXISTS Movimientos (
     saldo DECIMAL(10, 2),
     PRIMARY KEY (id)
     );
+
+ALTER TABLE `sql5663022`.`Cliente`
+    CHANGE `estado` `estado` BOOLEAN NULL;
