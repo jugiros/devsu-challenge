@@ -1,4 +1,5 @@
 package com.challenge.ClientePersona.services;
+import com.challenge.ClientePersona.dto.PersonaClienteDTO;
 import com.challenge.ClientePersona.models.Persona;
 import com.challenge.ClientePersona.repositories.PersonaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,19 +16,37 @@ public class PersonaService {
         this.personaRepository = personaRepository;
     }
 
-    public List<Persona> getAllPersonas() {
-        return personaRepository.findAll();
-    }
-
-    public Optional<Persona> getPersonaById(Long id) {
-        return personaRepository.findById(id);
-    }
-
     public Persona createOrUpdatePersona(Persona persona) {
         return personaRepository.save(persona);
     }
 
     public void deletePersonaById(Long id) {
         personaRepository.deleteById(id);
+    }
+
+    public boolean existsByIdentificacion(String identificacion) {
+        return personaRepository.existsByIdentificacion(identificacion);
+    }
+
+    public Persona createOrUpdateFromDTO(Persona persona, PersonaClienteDTO personaClienteDTO) {
+        persona.setNombre(personaClienteDTO.getNombre());
+        persona.setGenero(personaClienteDTO.getGenero());
+        persona.setEdad(personaClienteDTO.getEdad());
+        persona.setIdentificacion(personaClienteDTO.getIdentificacion());
+        persona.setDireccion(personaClienteDTO.getDireccion());
+        persona.setTelefono(personaClienteDTO.getTelefono());
+
+        return createOrUpdatePersona(persona);
+    }
+
+    public void updateFromDTO(Persona persona, PersonaClienteDTO personaClienteDTO) {
+        persona.setNombre(personaClienteDTO.getNombre());
+        persona.setGenero(personaClienteDTO.getGenero());
+        persona.setEdad(personaClienteDTO.getEdad());
+        persona.setIdentificacion(personaClienteDTO.getIdentificacion());
+        persona.setDireccion(personaClienteDTO.getDireccion());
+        persona.setTelefono(personaClienteDTO.getTelefono());
+
+        createOrUpdatePersona(persona);
     }
 }

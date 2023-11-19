@@ -31,22 +31,9 @@ public class ClienteController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping
-    public ResponseEntity<Cliente> createCliente(@RequestBody Cliente cliente) {
-        Cliente createdCliente = clienteService.createOrUpdateCliente(cliente);
-        return new ResponseEntity<>(createdCliente, HttpStatus.CREATED);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Cliente> updateCliente(@PathVariable Long id, @RequestBody Cliente cliente) {
-        cliente.setClienteId(id);
-        Cliente updatedCliente = clienteService.createOrUpdateCliente(cliente);
-        return new ResponseEntity<>(updatedCliente, HttpStatus.OK);
-    }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCliente(@PathVariable Long id) {
-        clienteService.deleteClienteById(id);
+        clienteService.deletePersonaAndClienteByClienteId(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -54,5 +41,11 @@ public class ClienteController {
     public ResponseEntity<Cliente> createClienteFromDTO(@RequestBody PersonaClienteDTO personaClienteDTO) {
         Cliente cliente = clienteService.createClienteFromDTO(personaClienteDTO);
         return new ResponseEntity<>(cliente, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/update-persona-cliente/{id}")
+    public ResponseEntity<Cliente> updatePersonaAndClienteFromClienteId(@PathVariable Long id, @RequestBody PersonaClienteDTO personaClienteDTO) {
+        Cliente cliente = clienteService.updatePersonaAndClienteFromClienteId(id, personaClienteDTO);
+        return new ResponseEntity<>(cliente, HttpStatus.OK);
     }
 }

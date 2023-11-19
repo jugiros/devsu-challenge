@@ -1,5 +1,7 @@
 package com.challenge.ClientePersona.services;
 import com.challenge.ClientePersona.dto.PersonaClienteDTO;
+import com.challenge.ClientePersona.exceptions.ClienteNotFoundException;
+import com.challenge.ClientePersona.exceptions.IdentificacionUnicaException;
 import com.challenge.ClientePersona.models.Cliente;
 import com.challenge.ClientePersona.models.Persona;
 import com.challenge.ClientePersona.repositories.ClienteRepository;
@@ -12,7 +14,6 @@ import java.util.Optional;
 @Service
 public class ClienteService {
     private final ClienteRepository clienteRepository;
-
     private final PersonaService personaService;
 
     @Autowired
@@ -33,31 +34,54 @@ public class ClienteService {
         return clienteRepository.save(cliente);
     }
 
-    public void deleteClienteById(Long id) {
-        clienteRepository.deleteById(id);
-    }
-
     @Transactional
     public Cliente createClienteFromDTO(PersonaClienteDTO personaClienteDTO) {
-        // Crear la persona desde el DTO
+        String identificacion = personaClienteDTO.getIdentificacion();
+        if (personaService.existsByIdentificacion(identificacion)) {
+            throw new IdentificacionUnicaException("La identificación '" + identificacion + "' ya está en uso");
+        }
+
         Persona persona = new Persona();
-        persona.setNombre(personaClienteDTO.getNombre());
-        persona.setGenero(personaClienteDTO.getGenero());
-        persona.setEdad(personaClienteDTO.getEdad());
-        persona.setIdentificacion(personaClienteDTO.getIdentificacion());
-        persona.setDireccion(personaClienteDTO.getDireccion());
-        persona.setTelefono(personaClienteDTO.getTelefono());
+        persona = personaService.createOrUpdateFromDTO(persona, personaClienteDTO); // Corregir aquí
 
-        // Guardar la persona y obtenerla con el ID asignado
-        persona = personaService.createOrUpdatePersona(persona);
-
-        // Crear el cliente asociado a la persona
         Cliente cliente = new Cliente();
-        cliente.setPersona(persona); // Asignar la persona creada al cliente
+        cliente.setPersona(persona);
         cliente.setContraseña(personaClienteDTO.getContraseña());
         cliente.setEstado(personaClienteDTO.getEstado());
 
-        // Guardar el cliente
         return createOrUpdateCliente(cliente);
+    }
+
+    @Transactional
+    public Cliente updatePersonaAndClienteFromClienteId(Long clienteId, PersonaClienteDTO personaClienteDTO) {
+        Cliente cliente = clienteRepository.findById(clienteId)
+                .orElseThrow(() -> new ClienteNotFoundException("Cliente no encontrado con ID: " + clienteId));
+
+        Persona persona = cliente.getPersona();
+        String nuevaIdentificacion = personaClienteDTO.getIdentificacion();
+
+        if (!persona.getIdentificacion().equals(nuevaIdentificacion) && personaService.existsByIdentificacion(nuevaIdentificacion)) {
+            throw new IdentificacionUnicaException("La identificación '" + nuevaIdentificacion + "' ya está en uso");
+        }
+
+        personaService.updateFromDTO(persona, personaClienteDTO);
+
+        cliente.setContraseña(personaClienteDTO.getContraseña());
+        cliente.setEstado(personaClienteDTO.getEstado());
+
+        return createOrUpdateCliente(cliente);
+    }
+
+    @Transactional
+    public void deletePersonaAndClienteByClienteId(Long clienteId) {
+        Cliente cliente = clienteRepository.findById(clienteId)
+                .orElseThrow(() -> new ClienteNotFoundException("Cliente no encontrado con ID: " + clienteId));
+
+        Persona persona = cliente.getPersona();
+        clienteRepository.delete(cliente);
+
+        if (persona != null) {
+            personaService.deletePersonaById(persona.getId());
+        }
     }
 }

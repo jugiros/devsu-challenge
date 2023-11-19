@@ -21,11 +21,14 @@ USE `devsu_challenge`;
 DROP TABLE IF EXISTS `cliente`;
 
 CREATE TABLE `cliente` (
-  `clienteId` bigint NOT NULL AUTO_INCREMENT,
+  `cliente_id` bigint NOT NULL AUTO_INCREMENT,
   `contraseña` varchar(255) DEFAULT NULL,
   `estado` tinyint(1) DEFAULT NULL,
-  PRIMARY KEY (`clienteId`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `persona_id` bigint NOT NULL,
+  PRIMARY KEY (`cliente_id`),
+  KEY `fk_persona_cliente` (`persona_id`),
+  CONSTRAINT `fk_persona_cliente` FOREIGN KEY (`persona_id`) REFERENCES `persona` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*Table structure for table `cuenta` */
 
@@ -67,7 +70,7 @@ CREATE TABLE `persona` (
   `telefono` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_identificacion` (`identificacion`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

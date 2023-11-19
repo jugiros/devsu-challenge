@@ -11,7 +11,7 @@ import lombok.Setter;
 public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "clienteId")
+    @Column(name = "cliente_id")
     private Long clienteId;
 
     @Column(name = "contraseña")
@@ -21,6 +21,6 @@ public class Cliente {
     private boolean estado;
 
     @OneToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "persona_id")
     private Persona persona;
 }

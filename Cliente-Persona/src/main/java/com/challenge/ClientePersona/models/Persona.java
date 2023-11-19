@@ -22,7 +22,7 @@ public class Persona {
     @Column(name = "edad")
     private int edad;
 
-    @Column(name = "identificacion")
+    @Column(name = "identificacion", unique = true)
     private String identificacion;
 
     @Column(name = "direccion")
