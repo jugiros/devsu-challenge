@@ -28,7 +28,7 @@ CREATE TABLE `cliente` (
   PRIMARY KEY (`cliente_id`),
   KEY `fk_persona_cliente` (`persona_id`),
   CONSTRAINT `fk_persona_cliente` FOREIGN KEY (`persona_id`) REFERENCES `persona` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*Table structure for table `cuenta` */
 
@@ -39,7 +39,7 @@ CREATE TABLE `cuenta` (
   `numero_cuenta` varchar(100) DEFAULT NULL,
   `tipo_cuenta` varchar(50) DEFAULT NULL,
   `saldo_inicial` decimal(10,2) DEFAULT NULL,
-  `estado` varchar(50) DEFAULT NULL,
+  `estado` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -53,7 +53,10 @@ CREATE TABLE `movimientos` (
   `tipo_movimiento` varchar(50) DEFAULT NULL,
   `valor` decimal(10,2) DEFAULT NULL,
   `saldo` decimal(10,2) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `cuenta_id` bigint NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_cuenta_movimiento` (`cuenta_id`),
+  CONSTRAINT `fk_cuenta_movimiento` FOREIGN KEY (`cuenta_id`) REFERENCES `cuenta` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*Table structure for table `persona` */
@@ -70,7 +73,7 @@ CREATE TABLE `persona` (
   `telefono` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_identificacion` (`identificacion`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
