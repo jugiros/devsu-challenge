@@ -25,4 +25,8 @@ public class Movimientos {
 
     @Column(name = "saldo")
     private Double saldo;
+
+    @OneToOne
+    @JoinColumn(name = "cuenta_id")
+    private Cuenta cuenta;
 }

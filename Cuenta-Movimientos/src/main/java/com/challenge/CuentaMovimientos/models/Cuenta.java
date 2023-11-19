@@ -24,5 +24,5 @@ public class Cuenta {
     private Double saldoInicial;
 
     @Column(name = "estado")
-    private String estado;
+    private Boolean estado;
 }
