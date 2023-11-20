@@ -35,17 +35,4 @@ public class MovimientosController {
         Movimientos createdMovimientos = movimientosService.createOrUpdateMovimientos(movimientos);
         return new ResponseEntity<>(createdMovimientos, HttpStatus.CREATED);
     }
-
-    @PutMapping("/update-movimiento/{id}")
-    public ResponseEntity<Movimientos> updateMovimientos(@PathVariable Long id, @RequestBody Movimientos movimientos) {
-        movimientos.setId(id);
-        Movimientos updatedMovimientos = movimientosService.createOrUpdateMovimientos(movimientos);
-        return new ResponseEntity<>(updatedMovimientos, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMovimientos(@PathVariable Long id) {
-        movimientosService.deleteMovimientosById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
 }
