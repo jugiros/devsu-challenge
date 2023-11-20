@@ -13,3 +13,9 @@ Name: devsu_challenge
 Username: jugiros
 Password: f21640f9
 Port number: 3306
+
+Descargar erlang
+https://www.erlang.org/downloads
+
+Descargar RabbitMQ
+https://www.rabbitmq.com/install-windows.html#installer
