@@ -26,7 +26,7 @@ public class Movimientos {
     @Column(name = "saldo")
     private Double saldo;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "cuenta_id")
     private Cuenta cuenta;
 }
