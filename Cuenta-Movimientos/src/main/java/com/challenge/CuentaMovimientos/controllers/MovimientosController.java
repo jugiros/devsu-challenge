@@ -30,13 +30,13 @@ public class MovimientosController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<Movimientos> createMovimientos(@RequestBody Movimientos movimientos) {
         Movimientos createdMovimientos = movimientosService.createOrUpdateMovimientos(movimientos);
         return new ResponseEntity<>(createdMovimientos, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update-movimiento/{id}")
     public ResponseEntity<Movimientos> updateMovimientos(@PathVariable Long id, @RequestBody Movimientos movimientos) {
         movimientos.setId(id);
         Movimientos updatedMovimientos = movimientosService.createOrUpdateMovimientos(movimientos);

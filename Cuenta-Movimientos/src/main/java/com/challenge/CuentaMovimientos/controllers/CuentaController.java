@@ -30,13 +30,13 @@ public class CuentaController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<Cuenta> createCuenta(@RequestBody Cuenta cuenta) {
         Cuenta createdCuenta = cuentaService.createOrUpdateCuenta(cuenta);
         return new ResponseEntity<>(createdCuenta, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update-cuenta/{id}")
     public ResponseEntity<Cuenta> updateCuenta(@PathVariable Long id, @RequestBody Cuenta cuenta) {
         cuenta.setId(id);
         Cuenta updatedCuenta = cuentaService.createOrUpdateCuenta(cuenta);
