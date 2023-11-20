@@ -44,7 +44,7 @@ CREATE TABLE `cuenta` (
   PRIMARY KEY (`id`),
   KEY `fk_cliente_cuenta` (`cliente_id`),
   CONSTRAINT `fk_cliente_cuenta` FOREIGN KEY (`cliente_id`) REFERENCES `cliente` (`cliente_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 /*Table structure for table `movimientos` */
 
