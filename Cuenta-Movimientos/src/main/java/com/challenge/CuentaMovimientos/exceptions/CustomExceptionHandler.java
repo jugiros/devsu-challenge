@@ -20,4 +20,9 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
     }
 
+    @ExceptionHandler(BalanceLessThanZeroException.class)
+    public ResponseEntity<Object> handleBalanceLessThanZeroException(BalanceLessThanZeroException ex) {
+        String message = ex.getMessage();
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
+    }
 }
