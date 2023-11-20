@@ -14,4 +14,10 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
     }
 
+    @ExceptionHandler(TipoMovimientoNotFoundException.class)
+    public ResponseEntity<Object> handleTipoMovimientoNotFoundException(TipoMovimientoNotFoundException ex) {
+        String message = ex.getMessage();
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
+    }
+
 }
