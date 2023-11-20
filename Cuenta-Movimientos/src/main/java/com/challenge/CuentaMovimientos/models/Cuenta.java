@@ -25,4 +25,7 @@ public class Cuenta {
 
     @Column(name = "estado")
     private Boolean estado;
+
+    @Column(name = "cliente_id")
+    private Long clienteId;
 }
