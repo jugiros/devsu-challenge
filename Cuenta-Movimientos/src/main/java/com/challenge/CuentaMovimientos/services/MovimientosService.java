@@ -1,4 +1,5 @@
 package com.challenge.CuentaMovimientos.services;
+
 import com.challenge.CuentaMovimientos.constants.Constants;
 import com.challenge.CuentaMovimientos.exceptions.BalanceLessThanZeroException;
 import com.challenge.CuentaMovimientos.exceptions.CuentaNotFoundException;
@@ -10,12 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class MovimientosService {
-    private final MovimientosRepository movimientosRepository;
 
+    private final MovimientosRepository movimientosRepository;
     private final CuentaService cuentaService;
 
     @Autowired
@@ -33,6 +38,21 @@ public class MovimientosService {
     }
 
     public Movimientos createOrUpdateMovimientos(Movimientos movimientos) {
+        validateMovimiento(movimientos);
+
+        Cuenta cuenta = getCuentaOrThrowException(movimientos.getCuenta().getId());
+        double lastSaldo = calculateLastSaldo(cuenta);
+        double newSaldo = calculateNewSaldo(movimientos, cuenta, lastSaldo);
+
+        if (newSaldo < 0) {
+            throw new BalanceLessThanZeroException("No se puede realizar el retiro porque el valor supera el saldo de la cuenta");
+        }
+
+        updateMovimientoData(movimientos, cuenta, newSaldo);
+        return movimientosRepository.save(movimientos);
+    }
+
+    private void validateMovimiento(Movimientos movimientos) {
         Optional<Cuenta> cuentaOptional = cuentaService.getCuentaById(movimientos.getCuenta().getId());
         if (cuentaOptional.isEmpty()) {
             throw new CuentaNotFoundException("La cuenta asociada no existe");
@@ -42,39 +62,34 @@ public class MovimientosService {
                 && !Objects.equals(movimientos.getTipoMovimiento(), Constants.DEPOSITO)) {
             throw new TipoMovimientoNotFoundException("El tipo de movimiento no existe");
         }
+    }
 
-        Cuenta cuenta = cuentaOptional.get();
+    private Cuenta getCuentaOrThrowException(Long cuentaId) {
+        return cuentaService.getCuentaById(cuentaId)
+                .orElseThrow(() -> new CuentaNotFoundException("La cuenta asociada no existe"));
+    }
 
+    private double calculateLastSaldo(Cuenta cuenta) {
         Movimientos lastMovimiento = movimientosRepository.findUltimoMovimiento();
-        double lastSaldo = 0;
-        double newSaldo = 0;
+        return (lastMovimiento != null) ? lastMovimiento.getSaldo() : cuenta.getSaldoInicial();
+    }
 
-        if (lastMovimiento != null) {
-            lastSaldo = lastMovimiento.getSaldo();
-        } else {
-            lastSaldo = cuenta.getSaldoInicial();
-        }
+    private double calculateNewSaldo(Movimientos movimientos, Cuenta cuenta, double lastSaldo) {
+        double valor = movimientos.getValor();
+        double newSaldo = (Objects.equals(movimientos.getTipoMovimiento(), Constants.RETIRO)) ?
+                lastSaldo - valor : lastSaldo + valor;
+        return newSaldo;
+    }
 
-        if (Objects.equals(movimientos.getTipoMovimiento(), Constants.RETIRO)) {
-            newSaldo = lastSaldo - movimientos.getValor();
-        } else {
-            newSaldo = lastSaldo + movimientos.getValor();
-        }
-
-        if (newSaldo < 0) {
-            throw new BalanceLessThanZeroException("No se puede realizar el retiro porque el valor supera el saldo de la cuenta");
-        }
-
+    private void updateMovimientoData(Movimientos movimientos, Cuenta cuenta, double newSaldo) {
         Date fecha = new Date();
-        Timestamp timestamp = new Timestamp(fecha.getTime());
-
         movimientos.setCuenta(cuenta);
-        movimientos.setFecha(timestamp);
+        movimientos.setFecha(new Timestamp(fecha.getTime()));
         movimientos.setSaldo(newSaldo);
-        return movimientosRepository.save(movimientos);
     }
 
     public List<Map<String, Object>> getMovementClientAccountRecords(Long clienteId, Date fechaDesde, Date fechaHasta) {
         return movimientosRepository.getMovementClientAccountRecords(clienteId, fechaDesde, fechaHasta);
     }
+
 }

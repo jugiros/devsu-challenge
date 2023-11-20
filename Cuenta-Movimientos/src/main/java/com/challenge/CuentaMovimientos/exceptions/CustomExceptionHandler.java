@@ -11,18 +11,18 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(CuentaNotFoundException.class)
     public ResponseEntity<Object> handleCuentaNotFoundException(CuentaNotFoundException ex) {
         String message = ex.getMessage();
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
     }
 
     @ExceptionHandler(TipoMovimientoNotFoundException.class)
     public ResponseEntity<Object> handleTipoMovimientoNotFoundException(TipoMovimientoNotFoundException ex) {
         String message = ex.getMessage();
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
     }
 
     @ExceptionHandler(BalanceLessThanZeroException.class)
     public ResponseEntity<Object> handleBalanceLessThanZeroException(BalanceLessThanZeroException ex) {
         String message = ex.getMessage();
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
+        return ResponseEntity.status(HttpStatus.PAYMENT_REQUIRED).body(message);
     }
 }

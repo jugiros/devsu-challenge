@@ -11,7 +11,7 @@ import java.util.Map;
 @Repository
 public interface MovimientosRepository extends JpaRepository<Movimientos, Long> {
 
-    @Query("SELECT m FROM Movimientos m ORDER BY m.fecha DESC")
+    @Query("SELECT m FROM Movimientos m WHERE m.fecha = (SELECT MAX(m2.fecha) FROM Movimientos m2)")
     Movimientos findUltimoMovimiento();
 
     @Query(value = "SELECT movimientos.fecha AS Fecha, persona.nombre AS Cliente, " +
