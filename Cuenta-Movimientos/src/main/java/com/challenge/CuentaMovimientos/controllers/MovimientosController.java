@@ -2,10 +2,14 @@ package com.challenge.CuentaMovimientos.controllers;
 import com.challenge.CuentaMovimientos.models.Movimientos;
 import com.challenge.CuentaMovimientos.services.MovimientosService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/movimientos")
@@ -34,5 +38,14 @@ public class MovimientosController {
     public ResponseEntity<Movimientos> createMovimientos(@RequestBody Movimientos movimientos) {
         Movimientos createdMovimientos = movimientosService.createOrUpdateMovimientos(movimientos);
         return new ResponseEntity<>(createdMovimientos, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/reporte")
+    public List<Map<String, Object>> obtenerMovimientosClienteCuenta(
+            @RequestParam Long clienteId,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaDesde,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaHasta
+    ) {
+        return movimientosService.getMovementClientAccountRecords(clienteId, fechaDesde, fechaHasta);
     }
 }

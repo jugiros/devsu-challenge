@@ -10,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class MovimientosService {
@@ -75,5 +72,9 @@ public class MovimientosService {
         movimientos.setFecha(timestamp);
         movimientos.setSaldo(newSaldo);
         return movimientosRepository.save(movimientos);
+    }
+
+    public List<Map<String, Object>> getMovementClientAccountRecords(Long clienteId, Date fechaDesde, Date fechaHasta) {
+        return movimientosRepository.getMovementClientAccountRecords(clienteId, fechaDesde, fechaHasta);
     }
 }
